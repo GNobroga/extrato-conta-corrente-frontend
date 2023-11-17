@@ -1,6 +1,6 @@
 # Projeto
 
-Esse projeto é a realização de uma simples API para atender o frontend que está no repositório **extrato-conta-corrente-frontend**.
+Esse projeto é a realização de frontend simples para atender o backend que está no repositório **extrato-conta-corrente-backend**.
 
 <a href="https://github.com/GNobroga/extrato-conta-corrente-backend">Ir para o backend</a>
 
