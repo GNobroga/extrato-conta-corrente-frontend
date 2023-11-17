@@ -26,6 +26,14 @@ ou
 
 caso tenha o Angular CLI.
 
+# Demonstração
+
+
+
+https://github.com/GNobroga/extrato-conta-corrente-frontend/assets/88632109/a17e95fe-95c0-4059-aabf-cfcb0154aced
+
+
+
 # Agradecimentos
 
 Obrigado <3
