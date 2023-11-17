@@ -1,27 +1,31 @@
-# Frontend
+# Projeto
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.1.
+Esse projeto é a realização de uma simples API para atender o frontend que está no repositório **extrato-conta-corrente-frontend**.
 
-## Development server
+<a href="https://github.com/GNobroga/extrato-conta-corrente-backend">Ir para o backend</a>
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+# Para executar este projeto
 
-## Code scaffolding
+Primeiro digite o comando 
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+  npm install
+```
 
-## Build
+Logo após 
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+  npm start 
+```
 
-## Running unit tests
+ou 
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+  ng s
+```
 
-## Running end-to-end tests
+caso tenha o Angular CLI.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+# Agradecimentos
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Obrigado <3
