@@ -1,0 +1,31 @@
+<div class="cadastro" [formGroup]="form">
+  <div class="d-flex justify-content-between mb-3">
+    <h1 class="display-4 fs-2">Editar lançamento</h1>
+    <div class="d-flex gap-2">
+      <button routerLink="/" mat-fab color="primary">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <button mat-fab (click)="salvarLancamento()">
+        <mat-icon>save</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="row row-cols-1">
+    <div class="row row-cols-2 m-0 p-0">
+      <mat-form-field appearance="outline">
+        <mat-label>Data</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="data" />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>R$</mat-label>
+        <input matInput placeholder="2500.00" formControlName="valor" />
+      </mat-form-field>
+    </div>
+  </div>
+</div>

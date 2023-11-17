@@ -1,0 +1,80 @@
+<div class="container">
+  <div class="header">
+    <div class="d-flex gap-3">
+      <mat-form-field color="accent" appearance="outline">
+        <mat-label>Data abaixo</mat-label>
+        <input matInput [matDatepicker]="picker1" [formControl]="abaixo">
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field color="accent" appearance="outline">
+        <mat-label>Data acima</mat-label>
+        <input matInput [matDatepicker]="picker2" [formControl]="acima">
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+      <button (click)="buscarPorConteudo()" mat-mini-fab color="primary" aria-label="Example icon button with a delete icon">
+        <mat-icon>find_in_page</mat-icon>
+      </button>
+      <button (click)="limparCampoDatas()" mat-mini-fab color="accent" aria-label="Example icon button with a delete icon">
+        <mat-icon>clear_all</mat-icon>
+      </button>
+    </div>
+    <button routerLink="/cadastrar" mat-mini-fab color="primary" aria-label="Example icon button with a delete icon">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+      <mat-cell *matCellDef="let lancamento"> {{lancamento.id}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="descricao">
+      <mat-header-cell *matHeaderCellDef>Descrição</mat-header-cell>
+      <mat-cell *matCellDef="let lancamento"> {{lancamento.descricao}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="data">
+      <mat-header-cell *matHeaderCellDef>Data</mat-header-cell>
+      <mat-cell *matCellDef="let lancamento"> {{lancamento.data | date: 'dd/MM/yyyy' : 'UTC' }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="valor">
+      <mat-header-cell *matHeaderCellDef>Valor</mat-header-cell>
+      <mat-cell *matCellDef="let lancamento"> {{lancamento.valor | currency: 'BRL':'symbol':'1.2-2'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="avulso">
+      <mat-header-cell *matHeaderCellDef>Avulso</mat-header-cell>
+      <mat-cell *matCellDef="let lancamento"> {{lancamento.avulso ? 'Avulso' : 'Não Avulso'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+      <mat-cell *matCellDef="let lancamento"> {{lancamento.status}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef>Ações</mat-header-cell>
+      <mat-cell *matCellDef="let lancamento">
+        <div class="actions" *ngIf="lancamento.status != 'Cancelado' && lancamento.avulso">
+          <button [routerLink]="['/editar', lancamento.id]" mat-icon-button color="primary" aria-label="Example icon button with a delete icon">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button (click)="marcarComoCancelado(lancamento.id)" mat-icon-button color="primary" aria-label="Example icon button with a delete icon">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedNameColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedNameColumns"></mat-row>
+  </mat-table>
+  <p class="mt-5 display-5 fs-6">Total do extrato: <span class="fw-bold text-success">R$ {{ total }}</span> </p>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>

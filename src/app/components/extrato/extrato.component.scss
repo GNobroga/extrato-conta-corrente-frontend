@@ -1,0 +1,16 @@
+.container {
+  min-width: 80vw;
+  max-width: 1000px;
+  min-height: 30vh;
+  padding: 1rem;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.3rem;
+  }
+}
