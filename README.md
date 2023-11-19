@@ -30,7 +30,8 @@ caso tenha o Angular CLI.
 
 
 
-https://github.com/GNobroga/extrato-conta-corrente-frontend/assets/88632109/a17e95fe-95c0-4059-aabf-cfcb0154aced
+https://github.com/GNobroga/extrato-conta-corrente-frontend/assets/88632109/45a78f23-f5ac-4bce-be43-2a55167e9804
+
 
 
 
