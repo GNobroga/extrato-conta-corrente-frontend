@@ -1,9 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import AppConfig from '../configs/AppConfig';
 import { Observable, Observer, map } from 'rxjs';
 import { Lancamento } from '../models/lancamento';
-import * as moment from 'moment';
+import AppConfig from '../configs/AppConfig';
 
 export interface IBuscarPorDataRangeReturn {
   lancamentos: Lancamento[];
@@ -14,49 +13,53 @@ export interface IBuscarPorDataRangeReturn {
   providedIn: 'root',
 })
 export class LancamentoService {
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-    }),
-  };
+
+  private _headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+  })
 
   constructor(private http: HttpClient) {}
 
-  public buscarPorDataRange(
-    abaixo?: Date | null,
-    acima?: Date | null
-  ): Observable<IBuscarPorDataRangeReturn> {
-    const abaixoFormatado = abaixo ? moment(abaixo).format('YYYY-MM-DD') : '';
-    const acimaFormatado = acima ? moment(acima).format('YYYY-MM-DD') : '';
-    return this.http
-      .get<Lancamento[]>(
-        AppConfig.API_URL_DATA_RANGE(abaixoFormatado, acimaFormatado)
-      )
-      .pipe(
-        map((lancamentos) => ({
-          lancamentos,
-          total: lancamentos.reduce((sum, y) => sum + y.valor, 0),
-        }))
-      );
+  public buscarPorId(id: number): Observable<Lancamento> {
+    return this.http.get<Lancamento>(`${AppConfig.API_PADRAO_ENDPOINT}/${id}`);
   }
 
-  public salvar(lancamento: Partial<Lancamento>) {
-    return this.http.post(AppConfig.API_URL, lancamento, this.httpOptions);
+  public cancelarPorId(id: number): Observable<any> {
+    return this.http.delete<Lancamento>(`${AppConfig.API_PADRAO_ENDPOINT}/${id}`);
   }
 
-  public buscar(id: number) {
-    return this.http.get(AppConfig.API_URL_FIND(id));
+  public cadastrarNovo(gravar: Omit<Lancamento, 'id'>): Observable<Lancamento> {
+    return this.http.post<Lancamento>(AppConfig.API_PADRAO_ENDPOINT, gravar);
   }
 
-  public atualizar(id: number, lancamento: Partial<Lancamento>) {
-    return this.http.put(
-      AppConfig.API_URL_FIND(id),
-      lancamento,
-      this.httpOptions
-    );
+  public modificar(id: number, gravar: Lancamento): Observable<Lancamento> {
+    return this.http.put<Lancamento>(`${AppConfig.API_PADRAO_ENDPOINT}/${id}`, gravar);
   }
 
-  public deletar(id: number) {
-    return this.http.delete(AppConfig.API_URL_FIND(id))
+  public encontrarPorLimiteDatas(inferior?: Date, superior?: Date): Observable<Lancamento[]> {
+
+    let queryStringInferior = '';
+    let queryStringSuperior = '';
+    let separador = inferior && superior ? '&' : '';
+
+    if (inferior) {
+      queryStringInferior = `abaixo=${this.extrairData(inferior)}`;
+    }
+
+    if (superior) {
+      queryStringSuperior = `acima=${this.extrairData(superior)}`;
+    }
+
+
+    return this.http.get<Lancamento[]>(`${AppConfig.API_ENCONTRAR_POR_DATA_ENDPOINT}?${queryStringInferior}${separador}${queryStringSuperior}`);
   }
+
+  private extrairData(data: Date) {
+    const ano = data.getFullYear();
+    const mes = `${data.getMonth() + 1}`;
+    const dia = `${data.getDate()}`;
+    return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+  }
+
+
 }

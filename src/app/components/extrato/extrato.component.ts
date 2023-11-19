@@ -1,8 +1,7 @@
-import { Component, ViewChild, AfterViewInit, DoCheck } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Lancamento } from 'src/app/models/lancamento';
 import { LancamentoService } from 'src/app/services/lancamento.service';
@@ -17,57 +16,60 @@ export class ExtratoComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   public displayedNameColumns: string[] = ['id', 'descricao', 'data', 'valor', 'avulso', 'status', 'actions', ];
+
   public dataSource = new MatTableDataSource<Lancamento>([]);
-  private _subscriptionDataRange!: Subscription;
+
   public total: number = 0;
 
-  public abaixo = new FormControl<Date | null>(null);
-  public acima = new FormControl<Date | null>(null);
+  public abaixo: Date | undefined;
+  public acima: Date | undefined;
 
-
-  constructor(private _lancamentoService: LancamentoService) {}
+  constructor(private _servico: LancamentoService, private rotaAtual: ActivatedRoute) {
+    const extrato = this.rotaAtual.snapshot.data['extrato'] as Lancamento[];
+    extrato.sort(this.compararStatus);
+    this.dataSource = new MatTableDataSource(extrato);
+    this.total = extrato.reduce((x, y) => x + y.valor, 0);
+  }
 
   public ngAfterViewInit(): void {
-      this.enviarData(null, null);
-      this.paginator.pageSize = 5;
       this.dataSource.paginator = this.paginator;
   }
 
-
   public buscarPorConteudo(): void {
-    if (this._subscriptionDataRange) {
-      this._subscriptionDataRange.unsubscribe();
-    }
-
-    const abaixoData = this.abaixo.value;
-    const acimaData = this.acima.value;
-
-    if (abaixoData || acimaData) {
-      this.enviarData(abaixoData, acimaData);
-    }
+    this._servico.encontrarPorLimiteDatas(this.abaixo, this.acima).subscribe(this.carregarExtrato());
   }
 
-  private enviarData(data1: Date | null, data2: Date | null): void {
-    this._subscriptionDataRange = this._lancamentoService
-          .buscarPorDataRange(data1, data2).subscribe({
-          next: response => {
-            this.dataSource = new MatTableDataSource(response.lancamentos)
-            this.total = response.total;
-            this.dataSource.paginator = this.paginator;
-          }
-      })
-  }
-
-  public limparCampoDatas(): void {
-    this.abaixo.setValue(null);
-    this.acima.setValue(null);
-    this.enviarData(null, null);
+  public limparCampoDeDatas(): void {
+    this.abaixo = undefined;
+    this.acima = undefined;
+    this._servico.encontrarPorLimiteDatas(this.abaixo, this.acima).subscribe(this.carregarExtrato());
   }
 
   public marcarComoCancelado(id: number): void {
-    this._lancamentoService.deletar(id).subscribe(value => {
-     this.enviarData(null, null);
-    });
+    this._servico.cancelarPorId(id).subscribe({
+      next: _ => this.buscarPorConteudo(),
+      error: erro => {
+        window.alert(erro?.error?.message);
+      },
+    })
+  }
+
+  private carregarExtrato(): any {
+    return {
+      next: (extrato: Lancamento[])=> {
+        extrato.sort(this.compararStatus);
+        this.dataSource = new MatTableDataSource(extrato);
+        this.dataSource.paginator = this.paginator;
+        this.total = extrato.reduce((x, y) => x + y.valor, 0);
+      },
+      error: (erro: any) => {
+        window.alert(erro?.error?.message);
+      },
+    };
+  }
+
+  private compararStatus(a: Lancamento, b: Lancamento) {
+    return a.status === 'Válido' && b.status === 'Cancelado' ? -1 : a.status !== 'Válido' && b.status === 'Válido' ? 1 : 0;
   }
 
 }

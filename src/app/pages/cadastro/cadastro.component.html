@@ -1,11 +1,11 @@
-<div class="cadastro" [formGroup]="form">
+<div class="cadastro">
   <div class="d-flex justify-content-between mb-3">
     <h1 class="display-4 fs-2">Novo lançamento</h1>
     <div class="d-flex gap-2">
       <button routerLink="/" mat-fab color="primary">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <button mat-fab (click)="salvarLancamento()">
+      <button mat-fab (click)="realizarCadastro()">
         <mat-icon>save</mat-icon>
       </button>
     </div>
@@ -13,13 +13,13 @@
   <div class="row row-cols-1">
     <mat-form-field class="example-full-width" appearance="outline">
       <mat-label>Descrição</mat-label>
-      <textarea matInput formControlName="descricao"></textarea>
+      <textarea matInput  [(ngModel)]="cadastroForm.descricao"></textarea>
     </mat-form-field>
 
     <div class="row row-cols-2 m-0 p-0">
       <mat-form-field appearance="outline">
         <mat-label>Data</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="data" />
+        <input matInput [matDatepicker]="picker" [(ngModel)]="cadastroForm.data" />
         <mat-datepicker-toggle
           matIconSuffix
           [for]="picker"
@@ -29,8 +29,9 @@
 
       <mat-form-field class="example-full-width" appearance="outline">
         <mat-label>R$</mat-label>
-        <input matInput placeholder="2500.00" formControlName="valor" type="number"/>
+        <input matInput placeholder="2500.00" type="number" [(ngModel)]="cadastroForm.valor"/>
       </mat-form-field>
     </div>
   </div>
 </div>
+

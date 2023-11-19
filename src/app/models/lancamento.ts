@@ -4,5 +4,5 @@ export interface Lancamento {
   data: Date;
   valor: number;
   avulso: boolean;
-  stutus: "Válido" | "Cancelado";
+  status: "Válido" | "Cancelado";
 }

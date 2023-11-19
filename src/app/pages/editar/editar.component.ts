@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Lancamento } from 'src/app/models/lancamento';
 import { LancamentoService } from 'src/app/services/lancamento.service';
 
 @Component({
@@ -10,24 +11,33 @@ import { LancamentoService } from 'src/app/services/lancamento.service';
 })
 export class EditarComponent {
 
-  public id: number | null = null;
-  public form = new FormGroup({
-    data: new FormControl<Date | undefined>(undefined),
-    valor: new FormControl<number>(0),
-  });
+  public editarForm = {
+    data: new Date(),
+    valor: 0,
+  };
 
-  constructor(private _lancamentoService: LancamentoService, private _router: Router, private _activatedRouter: ActivatedRoute) {
+  public id!: number;
 
-    this.id = parseInt(_activatedRouter.snapshot.paramMap.get('id') as string);
-    _lancamentoService.buscar(this.id).subscribe((value: any) => {
-      this.form.controls['data'].setValue(value.data);
-      this.form.controls['valor'].setValue(value.valor);
-    });
+  constructor(private _servico: LancamentoService, private _router: Router, private _rotaAtiva: ActivatedRoute) {
+    this.id = parseInt(_rotaAtiva.snapshot.paramMap.get('id') as string);
+    _servico.buscarPorId(this.id).subscribe({
+      next: value => {
+        this.editarForm = value;
+      }
+    })
   }
 
-  public salvarLancamento(): void {
-    const data = this.form.controls['data'].value as Date;
-    const valor = this.form.controls['valor'].value as number;
-    this._lancamentoService.atualizar(this.id as number, { data, valor}).subscribe(value => this._router.navigate(['/']));
+  public salvarAlteracoes(): void {
+    if (this.editarForm.data) {
+      this._servico
+        .modificar(this.id, this.editarForm as Lancamento)
+        .subscribe({
+          next: _ => this._router.navigate(['/']),
+          error: _ => window.alert('Nao foi possivel editar.'),
+        })
+    } else {
+      window.alert('Preencha a data.');
+    }
   }
+
 }
